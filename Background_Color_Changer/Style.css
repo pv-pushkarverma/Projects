@@ -1,0 +1,33 @@
+.bottom{
+    font-size: larger;
+    font-family: sans-serif;
+    font-style: italic;
+    padding: 25px;
+    text-align: center;
+    font-weight: 400;
+}
+
+.button-div{
+    margin-top: 100px;
+    margin-left: 150px;
+    margin-right: 150px;
+    margin-bottom: 20px;
+    padding: 50px;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+button{
+    margin: 50px;
+    padding: 50px   ;
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    border: 0;
+}
+
+button:hover{
+    cursor:pointer;
+    opacity: 0.8;
+    transition: 15ms;
+}
