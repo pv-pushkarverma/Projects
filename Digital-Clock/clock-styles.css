@@ -1,0 +1,22 @@
+#clock{
+    margin-top: 250px;
+    margin-left: 500px;
+    margin-right: 500px;
+    font-size: 50px;
+    text-align: center;
+    padding: 50px;
+    color: #ffffff;
+    background-color: #0d76a6;
+    border-radius: 25px 25px 0px 0px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2)
+}
+
+#date{
+    text-align: center;
+    padding: 25px;
+    background-color: #0f79a789;
+    border-radius: 0px 0px 25px 25px;
+    margin-left: 500px;
+    margin-right: 500px;
+    font-size: 40px;
+}

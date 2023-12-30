@@ -1,0 +1,48 @@
+#bmi-heading{
+    padding: 50px;
+    padding-top: 20px;
+    font-size: 50px;
+    font-weight: 400;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: oblique;
+    text-align: center;
+}
+
+form{
+    text-align: center;
+    margin-top: 100px;
+    padding: 25px;
+}
+
+.input{
+    font-size: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+input{
+    padding: 7px;
+    font-size: 20px;
+}   
+
+#submit{
+    margin-top: 25px;
+    font-size: 150%;
+    padding: 15px;
+    color:rgb(245, 246, 247);
+    background-color: rgba(12, 170, 41, 0.924);
+    cursor: pointer;
+    border-radius: 15px;
+}
+
+#submit:hover{
+    opacity: 0.8;
+}
+
+#result{
+    font-size: 25px;
+    margin:50px 500px;
+    padding: 20px;
+    border-radius: 20px;
+}
