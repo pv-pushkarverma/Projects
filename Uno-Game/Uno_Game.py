@@ -51,10 +51,8 @@ class Players:
 
     def print_cards(self):
         print(f"{self.player_name}'s cards are: ")
-        val=1
-        for card in self.players[self.player_name]:
-            print(val,": ",card,end=" , ")
-            val=val+1
+        for index,card in enumerate(self.players[self.player_name], start=1):
+            print(f"{index}: {card}", end=" , ")
         print()
 
     def draw_cards(self, count, player):
@@ -77,7 +75,6 @@ class Players:
                     return
             self.draw_cards(1, player)
             print(f"\nLast Played Card is: {self.played_cards[-1]}")
-            self.turn = 'Computer' if self.turn == self.player_name else self.player_name
         else:
             self.print_cards()
             while True:
@@ -112,8 +109,7 @@ class Players:
                 while new_color not in ['Red', 'Blue', 'Green', 'Yellow']:
                     new_color = input("Invalid color. Choose again (Red, Blue, Green, Yellow): ")
             else:
-                colors=['Red','Blue','Green','Yellow']
-                new_color=colors[int((random.random()*10)%4)]
+                new_color = random.choice(['Red', 'Blue', 'Green', 'Yellow'])
             self.played_cards[-1].color = new_color
 
             if card.value == '+4':
