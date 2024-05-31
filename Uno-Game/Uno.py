@@ -40,7 +40,7 @@ class Players:
         self.give_cards()
         while True:
             c=self.deck.draw_card()
-            if c.value not in ['Skip','+4','+2','Wild']:
+            if c.value not in ['Skip','+4','+2','Wild','Reverse']:
                 self.played_cards.append(c)
                 break
 
@@ -51,8 +51,10 @@ class Players:
 
     def print_cards(self):
         print(f"{self.player_name}'s cards are: ")
+        val=1
         for card in self.players[self.player_name]:
-            print(card)
+            print(val,": ",card,end=" , ")
+            val=val+1
         print()
 
     def draw_cards(self, count, player):
@@ -74,17 +76,19 @@ class Players:
                     print(f"Computer Played Card {card}")
                     return
             self.draw_cards(1, player)
+            print(f"\nLast Played Card is: {self.played_cards[-1]}")
             self.turn = 'Computer' if self.turn == self.player_name else self.player_name
         else:
             self.print_cards()
             while True:
                 try:
-                    choice = int(input("Choose a card number to play or -1 to draw: "))
-                    if choice == -1:
+                    choice = int(input("\nChoose a card number to play or 0 to draw: "))
+                    if choice == 0:
                         self.draw_cards(1, player)
+                        print(f"\nLast Played Card is: {self.played_cards[-1]}")
                         self.turn = 'Computer' if self.turn == self.player_name else self.player_name
                         return
-                    if choice < 0 or choice > len(self.players[player]):
+                    if choice <= 0 or choice > len(self.players[player]):
                         print("Invalid choice. Try again.")
                         continue
                     card = self.players[player][choice-1]
@@ -103,19 +107,20 @@ class Players:
         if card.value == '+2':
             self.draw_cards(2, 'Computer' if player == self.player_name else self.player_name)
         elif card.color == 'Wild':
+            if player == self.player_name:
+                new_color = input("Choose a color (Red, Blue, Green, Yellow): ")
+                while new_color not in ['Red', 'Blue', 'Green', 'Yellow']:
+                    new_color = input("Invalid color. Choose again (Red, Blue, Green, Yellow): ")
+            else:
+                colors=['Red','Blue','Green','Yellow']
+                new_color=colors[int((random.random()*10)%4)]
+            self.played_cards[-1].color = new_color
+
             if card.value == '+4':
                 self.draw_cards(4, 'Computer' if player == self.player_name else self.player_name)
-            
             else:
-                if player == self.player_name:
-                    new_color = input("Choose a color (Red, Blue, Green, Yellow): ")
-                    while new_color not in ['Red', 'Blue', 'Green', 'Yellow']:
-                        new_color = input("Invalid color. Choose again (Red, Blue, Green, Yellow): ")
-                else:
-                    colors=['Red','Blue','Green','Yellow']
-                    new_color=colors[int((random.random()*10)%4)]
                 self.turn = 'Computer' if self.turn == self.player_name else self.player_name
-            self.played_cards[-1].color = new_color
+
         elif card.value in ['Skip','Reverse']:
             pass
         else:
@@ -126,6 +131,7 @@ class Uno(Players):
         super().__init__()
 
     def play(self):
+        print(f"\nLast Played Card is: {self.played_cards[-1]}")
         while True:
             if not self.players['Computer']:
                 print("Computer Wins!!!")
@@ -133,8 +139,7 @@ class Uno(Players):
             if not self.players[self.player_name]:
                     print(f"{self.player_name} Wins!!!")
                     break
-
-            print(f"Last Played Card is: {self.played_cards[-1]}")
+                
             print()
 
             if self.turn == 'Computer':
