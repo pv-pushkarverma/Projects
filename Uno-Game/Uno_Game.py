@@ -1,12 +1,26 @@
 import random
+import os
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 class Cards:
+    color_codes = {
+        'Red': '\033[91m',
+        'Blue': '\033[94m',
+        'Green': '\033[92m',
+        'Yellow': '\033[93m',
+        'Wild': '\033[95m',
+        'ENDC': '\033[0m'
+    }
+
     def __init__(self, value, color):
         self.value = value
         self.color = color
 
     def __repr__(self):
-        return f'{self.value}[{self.color}]'
+        color_code = Cards.color_codes.get(self.color, Cards.color_codes['ENDC'])
+        return f'{color_code}{self.value}[{self.color}]{Cards.color_codes["ENDC"]}'
 
 class Deck:
     def __init__(self):
@@ -43,14 +57,32 @@ class Players:
             if c.value not in ['Skip','+4','+2','Wild','Reverse']:
                 self.played_cards.append(c)
                 break
-
+    
+    def print_rules(self):
+        clear_screen()
+        print(f"Welcome {self.player_name}.")
+        print("\nHere are some rules of Uno.")
+        print("\nThe Deck has 108 cards from (0-9) and special cards like 'Skip','Reverse',Wild','+2','+4'.")
+        print("\n1.You can play any card if it has either same color or same value as last played card.")
+        print("\n2.Special cards:")
+        print(" A)'Skip' skips the next players chance.")
+        print(" B)'Reverse' reverses the order of playing of players.")
+        print(" C)'+2' and '+4' will give next players 2 or 4 cards from the deck.")
+        print(" D)'Wild' and '+4 Wild' can be played anytime and they change the color of card to be played.")
+        print("\n3.Players are given 7 random cards from the deck.")
+        print("\n4.If you do not have any valid card to play then you have to draw a card.")
+        print("\n5.The goal of the game is to finish all cards in your hand first to Win.")
+        print("\n\nEnjoy The Game!!!\n")
+        x=input("Press any key to continue.")
+        clear_screen()
+    
     def give_cards(self):
         for _ in range(7):
             self.players['Computer'].append(self.deck.draw_card())
             self.players[self.player_name].append(self.deck.draw_card())
 
     def print_cards(self):
-        print(f"{self.player_name}'s cards are: ")
+        print(f"\n{self.player_name}'s cards are: ")
         for index,card in enumerate(self.players[self.player_name], start=1):
             print(f"{index}: {card}", end=" , ")
         print()
@@ -71,32 +103,40 @@ class Players:
                     self.played_cards.append(card)
                     self.players[player].remove(card)
                     self.handle_special_cards(card, player)
-                    print(f"Computer Played Card {card}")
+                    print(f"\nComputer Played Card {card}")
                     return
             self.draw_cards(1, player)
+            self.turn = 'Computer' if self.turn == self.player_name else self.player_name
             print(f"\nLast Played Card is: {self.played_cards[-1]}")
         else:
+            print(f"\nComputer's Remaining Cards are {len(self.players['Computer'])}")
             self.print_cards()
             while True:
                 try:
                     choice = int(input("\nChoose a card number to play or 0 to draw: "))
+                    clear_screen()
+                    print(f"\nLast Played Card is: {self.played_cards[-1]}")
                     if choice == 0:
                         self.draw_cards(1, player)
                         print(f"\nLast Played Card is: {self.played_cards[-1]}")
                         self.turn = 'Computer' if self.turn == self.player_name else self.player_name
                         return
-                    if choice <= 0 or choice > len(self.players[player]):
+                    if choice < 0 or choice > len(self.players[player]):
                         print("Invalid choice. Try again.")
+                        self.print_cards()
+                        print()
                         continue
                     card = self.players[player][choice-1]
                     if self.check_move(card):
                         self.played_cards.append(card)
                         self.players[player].remove(card)
                         self.handle_special_cards(card, player)
-                        print(f"{self.player_name} Played Card {card}")
+                        print(f"\n{self.player_name} Played Card {card}")
                         return
                     else:
                         print("Invalid move. Try again.")
+                        self.print_cards()
+                        print()
                 except ValueError:
                     print("Invalid input. Please enter a number.")
 
@@ -105,6 +145,8 @@ class Players:
             self.draw_cards(2, 'Computer' if player == self.player_name else self.player_name)
         elif card.color == 'Wild':
             if player == self.player_name:
+                self.print_cards()
+                print()
                 new_color = input("Choose a color (Red, Blue, Green, Yellow): ")
                 while new_color not in ['Red', 'Blue', 'Green', 'Yellow']:
                     new_color = input("Invalid color. Choose again (Red, Blue, Green, Yellow): ")
@@ -117,7 +159,7 @@ class Players:
             else:
                 self.turn = 'Computer' if self.turn == self.player_name else self.player_name
 
-        elif card.value in ['Skip','Reverse']:
+        elif card.value in ['Skip','Reverse','None']:
             pass
         else:
             self.turn = 'Computer' if self.turn == self.player_name else self.player_name
@@ -127,13 +169,21 @@ class Uno(Players):
         super().__init__()
 
     def play(self):
+        self.print_rules()
         print(f"\nLast Played Card is: {self.played_cards[-1]}")
         while True:
+            if not self.deck.deck:
+                for card in self.played_cards[:-1]:
+                    self.deck.deck.append(card)
+                random.shuffle(self.deck.deck)
+                self.played_cards = [self.played_cards[-1]]
+                
             if not self.players['Computer']:
-                print("Computer Wins!!!")
+                print("\n\n\n\033[92mComputer Wins!!!\n\n\n")
                 break
+
             if not self.players[self.player_name]:
-                    print(f"{self.player_name} Wins!!!")
+                    print(f"\n\n\n\033[92m{self.player_name} Wins!!!\n\n\n")
                     break
                 
             print()
